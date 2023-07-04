@@ -230,9 +230,7 @@ function PLUGIN:EmergencyFreeze(delay)
     ix.chat.Send(nil, "server", "Emergency freeze enabled; all entities are frozen for 10 seconds and building is disabled.")
     self.bInEmergency = true
 
-    self:FreezeEntites(ents.GetAll(), true)
-    self:FreezeEntites(player.GetAll(), true)
-    self:TogglePen(true, delay or 1)
+    self:FreezeAllMovement(delay or 1)
     self:ToggleBuilding(true)
     timer.Simple(delay or 1, function() 
         self:ToggleBuilding(false) 
