@@ -58,6 +58,8 @@ ix.config.Add("maxCollisions", 25, "The maximum amount of collisions allowed bef
     category = "Collision Handler"
 })
 
+if !(SERVER) then return end
+
 function PLUGIN:CheckCollisions()
     local count = 0
 
@@ -85,7 +87,6 @@ function PLUGIN:CheckCollisions()
     end
 
     local max = ix.config.Get("maxCollisions", 50)
-    print("Collision count: " .. count .. "/" .. max .. ".")
     return count
 end
 
