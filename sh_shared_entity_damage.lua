@@ -2,7 +2,7 @@ local PLUGIN = PLUGIN
 
 PLUGIN.name = "Shared Entity Damage"
 PLUGIN.author = "regen"
-PLUGIN.description = "Shares the (CTakeDamageInfo) damage type to the client."
+PLUGIN.description = "Shares the EntityTakeDamage (CTakeDamgeInfo) to the client."
 
 if SERVER then
     util.AddNetworkString("ixSharedEntityTakeDamage")
