@@ -37,7 +37,7 @@ if SERVER then
         local can = GAMEMODE.BaseClass:EntityTakeDamage(target, dmgInfo, ...)
         if can then return true end
 
-        local can = target:IsPlayer() or target:IsNPC() or target:IsNextBot() or (target.IsBot and target:IsBot())
+        can = target:IsPlayer() or target:IsNPC() or target:IsNextBot() or (target.IsBot and target:IsBot())
         if not can then return end
 
         hook.Run("PreSharedEntityTakeDamage", target, dmgInfo, ...)
