@@ -6,6 +6,8 @@
 
     This plugin adds metatables to (factions and classes), and adds methods of setting presistant data to them aswell, kinda figured this should have been in base helix idk why it was decided otherwise.
     Also adds hooks for post set and deletion of data, for whatever purpose.
+
+    DO NOT USE RN, FIXING SOON.
 ]==]
 
 ix.meta = ix.meta or {}
