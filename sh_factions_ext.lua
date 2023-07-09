@@ -2,8 +2,10 @@
     Author: regen
     Disclaimer: This is a library for developers, does not provide content on it's own, meant to be built upon.
     Important: Only put this in your schema/libs folder, this has to be loaded in a specific order before plugins.
-    
     Probably unrelated but backup your schema config if you care, for some reason when I restarted my server earlier it went to default config, prob unrelated but who knows until it happens lol!, has not happened since and have done multiple restarts.
+
+    This plugin adds metatables to (factions and classes), and adds methods of setting presistant data to them aswell, kinda figured this should have been in base helix idk why it was decided otherwise.
+    Also adds hooks for post set and deletion of data, for whatever purpose.
 ]==]
 
 ix.meta = ix.meta or {}
