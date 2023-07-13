@@ -360,8 +360,8 @@ else -- client state
                     end
                 else
                     for _, d in ipairs(v.data) do
-                        local class = ix.class.GetKey(d.uniqueID).index
-                        ix.data.Set("class_" .. d.faction .. "_" .. d.uniqueID .. "_" .. d.key, d.value, false, d.bNoSave)
+                        local class = ix.class.GetKey(d.uID).index
+                        ix.data.Set("class_" .. d.faction .. "_" .. d.uID .. "_" .. d.key, d.value, false, d.bNoSave)
                         ix.class.list[class][d.key] = d.value
                     end
                 end
