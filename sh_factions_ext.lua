@@ -3,7 +3,7 @@
     This plugin adds metatables to (factions and classes), and adds methods of setting presistant data to them aswell, kinda figured this should have been in base helix idk why it was decided otherwise.
     Also adds hooks for pre and post set / removal of data used interally, returning false on prehooks will prevent data from being changed.
 
-    
+
     READ IF YOU PLAN TO USE THIS:
 
     Important: Only put this in your schema/libs folder, this has to be loaded in a specific order before plugins.
@@ -15,7 +15,7 @@
     Only use if you know what you are doing, report any bugs / overhead directly to me in DMs (discord == 1337regen)
 
     TODO: convert to mysql (anyone is free to rewrite to mysql, contact me if you do this prior to me doing it)
-    TODO: clean variable naming
+    TODO: clean variable naming and concatenated strings
 ]==]
 
 ix.meta = ix.meta or {}
