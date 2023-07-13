@@ -1,7 +1,7 @@
 --[==[
     Author: regen
     This plugin adds metatables to (factions and classes), and adds methods of setting presistant data to them aswell, kinda figured this should have been in base helix idk why it was decided otherwise.
-    Also adds hooks for pre and post set / removal of data used interally, returning false on prehooks will prevent data from being changed.
+    Also adds hooks for pre and post set / removal of data used interally, returning true on prehooks will prevent data from being changed.
 
 
     READ IF YOU PLAN TO USE THIS:
@@ -23,12 +23,12 @@ ix.meta = ix.meta or {}
 local SyncData
 if (SERVER) then 
     util.AddNetworkString("ixFacDataSync") 
-    SyncData = function(bFaction, sync_type, data)
+    SyncData = function(bFaction, sync_type, data, receiver)
         net.Start("ixFacDataSync")
             net.WriteBool(bFaction)
             net.WriteString(sync_type)
             net.WriteTable(data)
-        net.Broadcast()
+        if receiver then net.Send(receiver) else net.Broadcast() end
     end
 end
 
@@ -107,8 +107,8 @@ do -- faction meta
             local uID = self:GetUniqueID()
             if (!uID) then return false, "Faction does not have a uniqueID." end
             
-            local can, err = hook.Run("PreFactionSetData", uID, key, value, bNoSave)
-            if (!can) then return false, err end
+            local fail, err = hook.Run("PreFactionSetData", uID, key, value, bNoSave)
+            if (fail) then return false, err end
             
             self[key] = value
             ix.data.Set("faction_" .. uID .. "_" .. key, value, false, bNoSave)
@@ -135,8 +135,8 @@ do -- faction meta
             local uID = self:GetUniqueID()
             if (!uID) then return false, "Faction does not have a uniqueID." end
 
-            local can, err = hook.Run("PreFactionRemoveData", uID, key)
-            if (!can) then return false, err end
+            local fail, err = hook.Run("PreFactionRemoveData", uID, key)
+            if (fail) then return false, err end
 
             self[key] = nil
             ix.data.Remove("faction_" .. uID .. "_" .. key)
@@ -151,18 +151,6 @@ do -- faction meta
             end
         
             hook.Run("PostFactionRemoveData", uID, key)
-        end
-
-        function Schema:PreFactionSetData(uID, key, value, bNoSave)
-        end
-
-        function Schema:PostFactionSetData(faction, key, value, bNoSave)
-        end
-
-        function Schema:PreFactionRemoveData(faction, key)
-        end
-
-        function Schema:PostFactionRemoveData(faction, key)
         end
     end
 
@@ -242,8 +230,8 @@ do -- class meta
             if !(faction) then return false, "Class does not have a faction." end
             if !(uID) then return false, "Class does not have a uniqueID." end
 
-            local can, err = hook.Run("PreClassSetData", faction, uID, key, value, bNoSave)
-            if (!can) then return false, err end
+            local fail, err = hook.Run("PreClassSetData", faction, uID, key, value, bNoSave)
+            if (fail) then return false, err end
 
             self[key] = value
             ix.data.Set("class_" .. faction .. "_" .. uID .. "_" .. key, value, false, bNoSave)
@@ -273,8 +261,8 @@ do -- class meta
             if !(faction) then return false, "Class does not have a faction." end
             if !(uID) then return false, "Class does not have a uniqueID." end
             
-            local can, err = hook.Run("PreClassRemoveData", faction, uID, key)
-            if (!can) then return false, err end
+            local fail, err = hook.Run("PreClassRemoveData", faction, uID, key)
+            if (fail) then return false, err end
             
             self[key] = nil
             ix.data.Remove("class_" .. faction .. "_" .. uID .. "_" .. key)
@@ -290,18 +278,6 @@ do -- class meta
             end
 
             hook.Run("PostClassRemoveData", faction, uID, key)
-        end
-
-        function Schema:PreClassSetData(factionID, uID, key, value, bNoSave)
-        end
-
-        function Schema:PostClassSetData(factionID, uID, key, value, bNoSave)
-        end
-
-        function Schema:PreClassRemoveData(factionID, uID, key)
-        end
-
-        function Schema:PostClassRemoveData(factionID, uID, key)
         end
     end
 
@@ -322,7 +298,7 @@ do -- class meta
 end
 
 if (SERVER) then -- server state
-    function Schema:PlayerInitialSpawn(ply)
+    local function onSpawn(ply)
         local cache = {}
 
         for _, v in ipairs(ix.faction.indices) do
@@ -341,15 +317,16 @@ if (SERVER) then -- server state
             end
         end
 
-        SyncData(_, "set_all", cache)
+        SyncData(_, "set_all", cache, ply)
     end
+    hook.Add("PlayerInitialSpawn", "ixFacDataSync", onSpawn)
 else -- client state
     -- ix.data.funcs are shared so we can run it on the client state
     net.Receive("ixFacDataSync", function()
         local faction_or_class = net.ReadBool()
         local update_type = net.ReadString()
         local data = net.ReadTable()
-    
+
         if (update_type == "set_all") then -- multiple factions and or classes were sent with full data
             for _, v in ipairs(data) do
                 if (v.bFaction) then
@@ -392,4 +369,4 @@ else -- client state
             end
         end
     end)    
-end    
+end
