@@ -341,11 +341,10 @@ if (SERVER) then -- server state
             end
         end
 
-        -- send cache in 1 network to client
         SyncData(_, "set_all", cache)
     end
 else -- client state
-    -- function for recieving data from the server, ix.data.Set is shared so we can run it on the client state
+    -- ix.data.funcs are shared so we can run it on the client state
     net.Receive("ixFacDataSync", function()
         local faction_or_class = net.ReadBool()
         local update_type = net.ReadString()
