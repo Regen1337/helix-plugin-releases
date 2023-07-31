@@ -1,3 +1,5 @@
+-- do not use
+
 local PLUGIN =  PLUGIN
 
 PLUGIN.name = "Collision Handler"
